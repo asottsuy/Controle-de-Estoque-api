@@ -1,4 +1,3 @@
-// src/server.js
 const restify = require('restify');
 const path = require('path');
 const prodRoutes = require('./routes/prodRoutes');

@@ -4,10 +4,10 @@ exports.getProdutos = (req, res, next) => {
     knex('produtos')
         .select('*')
         .then((produtos) => {
-            res.send(produtos);
+            res.send(200, produtos);
         })
         .catch((error) => {
-            res.status(500).json({ error: 'Erro ao buscar produtos' });
+            res.send(500, 'Erro ao buscar produtos');
         });
 };
 
