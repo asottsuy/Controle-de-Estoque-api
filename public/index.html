@@ -17,50 +17,71 @@
         .produto strong {
             color: #333;
         }
+
+        /* Formulário */
+        #formContainer {
+            display: none;
+            /* Inicialmente oculto */
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        label {
+            margin-right: 10px;
+        }
+
+        input,
+        select {
+            margin-bottom: 10px;
+        }
+
+        .submit-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .submit-button:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
 
 <body>
     <h1>Lista de Produtos</h1>
     <button id="getData">Carregar Produtos</button>
+    <button id="addData">Adicionar Produtos</button>
+
+    <div id="formContainer">
+        <h2>Adicionar Produto</h2>
+        <form id="productForm">
+            <label for="nome_produto">Nome:</label>
+            <input type="text" id="nome_produto" name="nome_produto" required><br><br>
+
+            <label for="preco">Preço:</label>
+            <input type="number" id="preco" name="preco" step="0.01" required><br><br>
+
+            <label for="tipo">Tipo:</label>
+            <select id="tipo" name="tipo" required>
+                <option value="Cozinha">Cozinha</option>
+                <option value="Sushi">Sushi</option>
+            </select><br><br>
+
+            <label for="quantidade">Quantidade:</label>
+            <input type="number" id="quantidade" name="quantidade" required><br><br>
+
+            <button type="submit" class="submit-button">Salvar Produto</button>
+        </form>
+    </div>
+
     <div id="dataContainer"></div> <!-- Onde os produtos serão exibidos -->
 
-    <script>
-        document.getElementById('getData').addEventListener('click', () => {
-            // Fazendo a requisição para o servidor
-            fetch('http://localhost:8001/api/produtos')
-                .then(response => response.json())  // Converte a resposta para JSON
-                .then(data => {
-                    const container = document.getElementById('dataContainer');
-                    container.innerHTML = ''; // Limpa o conteúdo anterior
-
-                    // Verificando se há produtos para exibir
-                    if (data.length === 0) {
-                        container.innerHTML = '<p>Não há produtos para exibir.</p>';
-                    } else {
-                        // Exibe cada produto como um bloco separado
-                        data.forEach(produto => {
-                            const produtoDiv = document.createElement('div');
-                            produtoDiv.classList.add('produto'); // Adiciona uma classe para estilizar
-
-                            // Adicionando as informações do produto no formato HTML
-                            produtoDiv.innerHTML = `
-                                <strong>Nome:</strong> ${produto.nome_produto} <br>
-                                <strong>Preço:</strong> R$ ${produto.preco} <br>
-                                <strong>Tipo:</strong> ${produto.tipo} <br><br>
-                             `;
-
-                            // Adiciona o produto no container
-                            container.appendChild(produtoDiv);
-                        });
-                    }
-                })
-                .catch(error => {
-                    console.error('Erro ao buscar produtos:', error);
-                    alert('Erro ao carregar produtos.');
-                });
-        });
-    </script>
+    <script src="js/app.js" defer></script>
 </body>
 
 </html>

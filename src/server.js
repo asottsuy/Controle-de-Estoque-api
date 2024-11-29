@@ -15,8 +15,8 @@ server.use(restify.plugins.bodyParser());
 prodRoutes(server);
 
 // Serve o arquivo index.html da pasta public
-server.get('/', restify.plugins.serveStatic({
-    directory: path.join(__dirname, 'public'),
+server.get('/*', restify.plugins.serveStatic({
+    directory: path.join(__dirname, '..', 'public'),
     default: 'index.html'
 }));
 

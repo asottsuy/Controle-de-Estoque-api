@@ -7,12 +7,18 @@ exports.getProdutos = (req, res, next) => {
             res.send(200, produtos);
         })
         .catch((error) => {
-            res.send(500, 'Erro ao buscar produtos');
+            res.send(500, { message: 'Erro ao buscar produtos', error: error.message });
         });
 };
 
 exports.addProduto = (req, res, next) => {
     const { nome_produto, preco, tipo } = req.body;
+
+    // Verifica se todos os campos obrigatórios estão presentes
+    if (!nome_produto || !preco || !tipo) {
+        res.send(400, { message: 'Todos os campos são obrigatórios.' });
+        return next();
+    }
 
     knex('produtos')
         .insert({ nome_produto, preco, tipo }, ['id_produto', 'nome_produto', 'preco', 'tipo'])
@@ -25,6 +31,7 @@ exports.addProduto = (req, res, next) => {
             return next();
         });
 };
+
 
 exports.deleteProduto = (req, res, next) => {
     const id = req.params.id;
