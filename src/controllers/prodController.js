@@ -12,7 +12,7 @@ exports.getProdutos = (req, res, next) => {
 };
 
 exports.addProduto = (req, res, next) => {
-    const { nome_produto, preco, tipo } = req.body;
+    const { nome_produto, preco, tipo, quantidade } = req.body;
 
     // Verifica se todos os campos obrigatórios estão presentes
     if (!nome_produto || !preco || !tipo) {
@@ -21,7 +21,7 @@ exports.addProduto = (req, res, next) => {
     }
 
     knex('produtos')
-        .insert({ nome_produto, preco, tipo }, ['id_produto', 'nome_produto', 'preco', 'tipo'])
+        .insert({ nome_produto, preco, tipo, quantidade }, ['id_produto', 'nome_produto', 'preco', 'tipo', 'quantidade'])
         .then(([newProduto]) => {
             res.send(201, newProduto);
             return next();
@@ -41,9 +41,33 @@ exports.deleteProduto = (req, res, next) => {
         .delete()
         .then((dados) => {
             if (!dados) {
-                return res.send(new errors.BadRequestError('Este produto não foi encontrado'));
+                return res.send(400, 'Este produto não foi encontrado');
             }
             res.send(200, `Produto com ID ${id} foi deletado com sucesso!`);
         })
         .catch(next);
 };
+
+exports.updateProduto = (req, res, next) => {
+    const { id_produto } = req.params; // Obtém o ID do produto dos parâmetros da URL
+    const produtoData = req.body; // Obtém os dados do produto a partir do corpo da requisição
+
+    if (!id_produto) {
+        return res.send(400, 'Este produto não foi encontrado');
+    }
+    // Usando Knex para atualizar o produto
+    knex('produtos')
+        .where('id_produto', id_produto) // Filtra pelo ID do produto
+        .update(produtoData) // Atualiza os dados do produto
+        .then((dados) => {
+            if (dados) {
+                res.send({ message: 'Produto atualizado com sucesso!', dados });
+            } else {
+                return res.send(404, 'Este produto não foi encontrado');
+            }
+        })
+        .catch(error => {
+            console.error(error);
+            res.send(500, { message: 'Erro ao atualizar produto', error });
+        });
+}

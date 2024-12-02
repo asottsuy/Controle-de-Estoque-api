@@ -18,14 +18,23 @@ function carregarProdutos() {
 
                     // Adicionando as informações do produto no formato HTML
                     produtoDiv.innerHTML = `
+                        <strong>ID:</strong> ${produto.id_produto} <br>
                         <strong>Nome:</strong> ${produto.nome_produto} <br>
                         <strong>Preço:</strong> R$ ${produto.preco} <br>
                         <strong>Tipo:</strong> ${produto.tipo} <br>
                         <strong>Quantidade:</strong> ${produto.quantidade} <br><br>
+                        <button class="editButton" data-id="${produto.id_produto}">Editar</button>
                     `;
 
                     // Adiciona o produto no container
                     container.appendChild(produtoDiv);
+                });
+                const editButtons = document.querySelectorAll('.editButton');
+                editButtons.forEach(button => {
+                    button.addEventListener('click', function () {
+                        const id = this.getAttribute('data-id');
+                        editarProduto(id);
+                    });
                 });
             }
         })
@@ -78,6 +87,73 @@ function adicionarProdutos() {
         })
         .catch(error => {
             console.error('Erro ao adicionar produto:', error);
+            alert('Erro ao salvar produto.');
+        });
+}
+// Função para editar um produto
+function editarProduto(id) {
+    // Faz a requisição para pegar o produto pelo ID
+    fetch(`http://localhost:8001/api/produtos/${id}`)
+        .then(response => response.json())
+        .then(produto => {
+            // Preenche o formulário com os dados do produto
+            document.getElementById('editId').value = produto.id_produto;
+            document.getElementById('nome_produto').value = produto.nome_produto;
+            document.getElementById('preco').value = produto.preco;
+            document.getElementById('tipo').value = produto.tipo;
+            document.getElementById('quantidade').value = produto.quantidade;
+
+            // Exibe o formulário para edição
+            document.getElementById('formContainer').style.display = 'block';
+        })
+        .catch(error => {
+            console.error('Erro ao buscar produto para edição:', error);
+            alert('Erro ao carregar produto para edição.');
+        });
+}
+// Função para adicionar ou atualizar um produto
+function salvarProduto(event) {
+    event.preventDefault(); // Impede o envio normal do formulário
+
+    const id = document.getElementById('editId').value; // Obtém o ID do produto se estiver editando
+    const nome_produto = document.getElementById('nome_produto').value;
+    const preco = parseFloat(document.getElementById('preco').value);
+    const tipo = document.getElementById('tipo').value;
+    const quantidade = parseInt(document.getElementById('quantidade').value);
+
+    const produto = {
+        nome_produto,
+        preco,
+        tipo,
+        quantidade
+    };
+
+    let url = 'http://localhost:8001/produtos';
+    let method = 'POST';
+
+    if (id) {
+        // Se o ID estiver presente, é uma atualização
+        url += `/${id}`;
+        method = 'PUT'; // Muda o método para PUT para atualização
+    }
+
+    // Faz a requisição para adicionar ou atualizar o produto
+    fetch(url, {
+        method,
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(produto)
+    })
+        .then(response => response.json())
+        .then(data => {
+            alert(id ? 'Produto atualizado com sucesso!' : 'Produto adicionado com sucesso!');
+            document.getElementById('productForm').reset(); // Limpa o formulário
+            document.getElementById('formContainer').style.display = 'none'; // Oculta o formulário
+            carregarProdutos(); // Atualiza a lista de produtos
+        })
+        .catch(error => {
+            console.error('Erro ao salvar produto:', error);
             alert('Erro ao salvar produto.');
         });
 }
