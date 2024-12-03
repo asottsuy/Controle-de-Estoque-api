@@ -1,22 +1,19 @@
+let editOrAdd = null;
+
 // Função para carregar produtos
 function carregarProdutos() {
-    // Fazendo a requisição para o servidor
     fetch('http://localhost:8001/api/produtos')
         .then(response => response.json())  // Converte a resposta para JSON
         .then(data => {
             const container = document.getElementById('dataContainer');
             container.innerHTML = ''; // Limpa o conteúdo anterior
 
-            // Verificando se há produtos para exibir
             if (data.length === 0) {
                 container.innerHTML = '<p>Não há produtos para exibir.</p>';
             } else {
-                // Exibe cada produto como um bloco separado
                 data.forEach(produto => {
                     const produtoDiv = document.createElement('div');
-                    produtoDiv.classList.add('produto'); // Adiciona uma classe para estilizar
-
-                    // Adicionando as informações do produto no formato HTML
+                    produtoDiv.classList.add('produto');
                     produtoDiv.innerHTML = `
                         <strong>ID:</strong> ${produto.id_produto} <br>
                         <strong>Nome:</strong> ${produto.nome_produto} <br>
@@ -25,10 +22,9 @@ function carregarProdutos() {
                         <strong>Quantidade:</strong> ${produto.quantidade} <br><br>
                         <button class="editButton" data-id="${produto.id_produto}">Editar</button>
                     `;
-
-                    // Adiciona o produto no container
                     container.appendChild(produtoDiv);
                 });
+
                 const editButtons = document.querySelectorAll('.editButton');
                 editButtons.forEach(button => {
                     button.addEventListener('click', function () {
@@ -45,34 +41,26 @@ function carregarProdutos() {
 }
 
 document.getElementById('getData').addEventListener('click', () => {
-    console.log('Botão foi clicado');
     carregarProdutos();
 });
 
 function adicionarProdutos() {
     const form = document.getElementById('productForm');
+    editOrAdd = "add";
 
-    // Captura os valores do formulário
     const nome_produto = document.getElementById('nome_produto').value;
     const preco = parseFloat(document.getElementById('preco').value);
     const tipo = document.getElementById('tipo').value;
     const quantidade = parseInt(document.getElementById('quantidade').value);
 
-    // Cria o objeto do produto
-    const produto = {
-        nome_produto,
-        preco,
-        tipo,
-        quantidade
-    };
+    const produto = { nome_produto, preco, tipo, quantidade };
 
-    // Faz a requisição POST para o servidor
     fetch('http://localhost:8001/produtos', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify(produto) // Envia o produto no corpo da requisição
+        body: JSON.stringify(produto)
     })
         .then(response => {
             if (!response.ok) {
@@ -90,20 +78,22 @@ function adicionarProdutos() {
             alert('Erro ao salvar produto.');
         });
 }
-// Função para editar um produto
+
 function editarProduto(id) {
-    // Faz a requisição para pegar o produto pelo ID
-    fetch(`http://localhost:8001/api/produtos/${id}`)
+    editOrAdd = "edit";
+    fetch(`http://localhost:8001/produtos/update/${id}`)
         .then(response => response.json())
+        
         .then(produto => {
-            // Preenche o formulário com os dados do produto
             document.getElementById('editId').value = produto.id_produto;
             document.getElementById('nome_produto').value = produto.nome_produto;
             document.getElementById('preco').value = produto.preco;
             document.getElementById('tipo').value = produto.tipo;
             document.getElementById('quantidade').value = produto.quantidade;
 
-            // Exibe o formulário para edição
+            document.querySelector('#formContainer h2').textContent = 'Editar Produto';
+            document.querySelector('.submit-button').textContent = 'Atualizar Produto';
+
             document.getElementById('formContainer').style.display = 'block';
         })
         .catch(error => {
@@ -111,33 +101,27 @@ function editarProduto(id) {
             alert('Erro ao carregar produto para edição.');
         });
 }
-// Função para adicionar ou atualizar um produto
-function salvarProduto(event) {
-    event.preventDefault(); // Impede o envio normal do formulário
 
-    const id = document.getElementById('editId').value; // Obtém o ID do produto se estiver editando
+// Função para salvar ou atualizar o produto
+function salvarProduto(event) {
+    event.preventDefault();
+
+    const id = document.getElementById('editId').value;
     const nome_produto = document.getElementById('nome_produto').value;
     const preco = parseFloat(document.getElementById('preco').value);
     const tipo = document.getElementById('tipo').value;
     const quantidade = parseInt(document.getElementById('quantidade').value);
 
-    const produto = {
-        nome_produto,
-        preco,
-        tipo,
-        quantidade
-    };
+    const produto = { nome_produto, preco, tipo, quantidade };
 
     let url = 'http://localhost:8001/produtos';
     let method = 'POST';
 
     if (id) {
-        // Se o ID estiver presente, é uma atualização
-        url += `/${id}`;
-        method = 'PUT'; // Muda o método para PUT para atualização
+        url += `/update/${id}`;
+        method = 'PUT'; // Alterar para PUT para atualização
     }
 
-    // Faz a requisição para adicionar ou atualizar o produto
     fetch(url, {
         method,
         headers: {
@@ -148,8 +132,8 @@ function salvarProduto(event) {
         .then(response => response.json())
         .then(data => {
             alert(id ? 'Produto atualizado com sucesso!' : 'Produto adicionado com sucesso!');
-            document.getElementById('productForm').reset(); // Limpa o formulário
-            document.getElementById('formContainer').style.display = 'none'; // Oculta o formulário
+            document.getElementById('productForm').reset();
+            document.getElementById('formContainer').style.display = 'none';
             carregarProdutos(); // Atualiza a lista de produtos
         })
         .catch(error => {
@@ -158,19 +142,9 @@ function salvarProduto(event) {
         });
 }
 
-// Adiciona o evento de submissão ao formulário
-document.getElementById('productForm').addEventListener('submit', event => {
-    event.preventDefault(); // Evita o envio padrão do formulário
-    adicionarProdutos(); // Chama a função para adicionar o produto
-});
+document.getElementById('productForm').addEventListener('submit', salvarProduto);
 
-// Adicionar evento para exibir o formulário ao clicar no botão "Adicionar Produtos"
 document.getElementById('addData').addEventListener('click', () => {
     const formContainer = document.getElementById('formContainer');
-    // Alternar a exibição do formulário (mostrar ou ocultar)
-    if (formContainer.style.display === 'none' || formContainer.style.display === '') {
-        formContainer.style.display = 'block';
-    } else {
-        formContainer.style.display = 'none';
-    }
+    formContainer.style.display = formContainer.style.display === 'none' || formContainer.style.display === '' ? 'block' : 'none';
 });
