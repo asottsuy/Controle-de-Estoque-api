@@ -1,12 +1,11 @@
 let editOrAdd = null;
 
-// Função para carregar produtos
 function carregarProdutos() {
     fetch('http://localhost:8001/api/produtos')
-        .then(response => response.json())  // Converte a resposta para JSON
+        .then(response => response.json())
         .then(data => {
             const container = document.getElementById('dataContainer');
-            container.innerHTML = ''; // Limpa o conteúdo anterior
+            container.innerHTML = '';
 
             if (data.length === 0) {
                 container.innerHTML = '<p>Não há produtos para exibir.</p>';
@@ -21,6 +20,7 @@ function carregarProdutos() {
                         <strong>Tipo:</strong> ${produto.tipo} <br>
                         <strong>Quantidade:</strong> ${produto.quantidade} <br><br>
                         <button class="editButton" data-id="${produto.id_produto}">Editar</button>
+                        <button class="deleteButton" data-id="${produto.id_produto}">Deletar</button>
                     `;
                     container.appendChild(produtoDiv);
                 });
@@ -29,7 +29,19 @@ function carregarProdutos() {
                 editButtons.forEach(button => {
                     button.addEventListener('click', function () {
                         const id = this.getAttribute('data-id');
+                        console.log(id);
                         editarProduto(id);
+                        console.log('Botão Editar clicado. ID:', id);
+                    });
+                });
+
+                const deleteButtons = document.querySelectorAll('.deleteButton');
+                deleteButtons.forEach(button => {
+                    button.addEventListener('click', function () {
+                        const id = this.getAttribute('data-id');
+                        console.log(id);
+                        deletarProduto(id);
+                        console.log('Botão Deletar clicado. ID:', id);
                     });
                 });
             }
@@ -70,8 +82,8 @@ function adicionarProdutos() {
         })
         .then(data => {
             alert('Produto adicionado com sucesso!');
-            form.reset(); // Limpa o formulário
-            carregarProdutos(); // Atualiza a lista de produtos
+            form.reset();
+            carregarProdutos(); 
         })
         .catch(error => {
             console.error('Erro ao adicionar produto:', error);
@@ -81,10 +93,17 @@ function adicionarProdutos() {
 
 function editarProduto(id) {
     editOrAdd = "edit";
-    fetch(`http://localhost:8001/produtos/update/${id}`)
+    fetch(`http://localhost:8001/api/produtos/${id}`)
         .then(response => response.json())
-        
+
         .then(produto => {
+
+            console.log('Preenchendo formulário com:', produto);
+
+            if (Array.isArray(produto)) {
+                produto = produto[0];
+            }
+
             document.getElementById('editId').value = produto.id_produto;
             document.getElementById('nome_produto').value = produto.nome_produto;
             document.getElementById('preco').value = produto.preco;
@@ -102,7 +121,6 @@ function editarProduto(id) {
         });
 }
 
-// Função para salvar ou atualizar o produto
 function salvarProduto(event) {
     event.preventDefault();
 
@@ -119,7 +137,7 @@ function salvarProduto(event) {
 
     if (id) {
         url += `/update/${id}`;
-        method = 'PUT'; // Alterar para PUT para atualização
+        method = 'PUT';
     }
 
     fetch(url, {
@@ -134,7 +152,7 @@ function salvarProduto(event) {
             alert(id ? 'Produto atualizado com sucesso!' : 'Produto adicionado com sucesso!');
             document.getElementById('productForm').reset();
             document.getElementById('formContainer').style.display = 'none';
-            carregarProdutos(); // Atualiza a lista de produtos
+            carregarProdutos();
         })
         .catch(error => {
             console.error('Erro ao salvar produto:', error);
@@ -142,9 +160,48 @@ function salvarProduto(event) {
         });
 }
 
+
+function deletarProduto(id) {
+    const confirmar = confirm("Tem certeza de que deseja remover este produto?");
+
+    if (confirmar) {
+        fetch(`http://localhost:8001/produtos/delete/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erro ao remover produto');
+                }
+                return response.json();
+            })
+            .then(data => {
+                alert('Produto removido com sucesso!');
+                carregarProdutos();
+            })
+            .catch(error => {
+                console.error('Erro ao remover produto:', error);
+                alert('Erro ao remover produto.');
+            });
+    } else {
+        alert('A remoção foi cancelada.');
+    }
+}
+
+
 document.getElementById('productForm').addEventListener('submit', salvarProduto);
 
 document.getElementById('addData').addEventListener('click', () => {
     const formContainer = document.getElementById('formContainer');
-    formContainer.style.display = formContainer.style.display === 'none' || formContainer.style.display === '' ? 'block' : 'none';
+
+    document.getElementById('productForm').reset();
+
+    editOrAdd = "add";
+
+    document.querySelector('#formContainer h2').textContent = 'Adicionar Produto';
+    document.querySelector('.submit-button').textContent = 'Adicionar Produto';
+
+    formContainer.style.display = 'block';
 });

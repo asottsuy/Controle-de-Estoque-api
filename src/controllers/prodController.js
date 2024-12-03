@@ -55,7 +55,7 @@ exports.updateProduto = (req, res, next) => {
     if (!id_produto) {
         return res.send(400, 'Este produto não foi encontrado');
     }
-    // Usando Knex para atualizar o produto
+
     knex('produtos')
         .where('id_produto', id_produto) // Filtra pelo ID do produto
         .update(produtoData) // Atualiza os dados do produto
@@ -71,3 +71,25 @@ exports.updateProduto = (req, res, next) => {
             res.send(500, { message: 'Erro ao atualizar produto', error });
         });
 }
+
+exports.getProdutosbyId = (req, res, next) => {
+    const { id_produto } = req.params;
+
+    if (!id_produto) {
+        return res.send(400, 'Este produto não foi encontrado');
+    }
+    knex('produtos')
+        .where('id_produto', id_produto)
+        .first()
+        .then((produto) => {
+            if (!produto) {
+                return res.send(404, { message: 'Produto não encontrado' });
+            }
+            res.send(200, produto);
+            console.log('Produto recebido da API:', produto);
+
+        })
+        .catch((error) => {
+            res.send(500, { message: 'Erro ao buscar produtos', error: error.message });
+        });
+};
