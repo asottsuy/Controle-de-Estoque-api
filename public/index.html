@@ -1,87 +1,14 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Produtos</title>
-    <style>
-        .produto {
-            border: 1px solid #ccc;
-            margin: 10px 0;
-            padding: 10px;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-        }
-
-        .produto strong {
-            color: #333;
-        }
-
-        #formContainer {
-            display: none;
-            margin-top: 20px;
-            padding: 15px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-        }
-
-        label {
-            margin-right: 10px;
-        }
-
-        input,
-        select {
-            margin-bottom: 10px;
-        }
-
-        .submit-button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            cursor: pointer;
-        }
-
-        .submit-button:hover {
-            background-color: #45a049;
-        }
-    </style>
+    <title>Tela de Login</title>
 </head>
 
 <body>
-    <h1>Lista de Produtos</h1>
-    <button id="getData">Carregar Produtos</button>
-    <button id="addData">Adicionar Produtos</button>
-
-    <div id="formContainer">
-        <h2>Adicionar Produto</h2>
-        <form id="productForm">
-            <input type="hidden" id="editId" name="editId">
-
-            <label for="nome_produto">Nome:</label>
-            <input type="text" id="nome_produto" name="nome_produto" required><br><br>
-
-            <label for="preco">Preço:</label>
-            <input type="number" id="preco" name="preco" step="0.01" required><br><br>
-
-            <label for="tipo">Tipo:</label>
-            <select id="tipo" name="tipo" required>
-                <option value="Cozinha">Cozinha</option>
-                <option value="Sushi">Sushi</option>
-            </select><br><br>
-
-            <label for="quantidade">Quantidade:</label>
-            <input type="number" id="quantidade" name="quantidade" required><br><br>
-
-            <button type="submit" class="submit-button">Salvar Produto</button>
-        </form>
-    </div>
-
-    <div id="dataContainer"></div>
-
-    <script src="js/app.js" defer></script>
+    <h1>Login com Google</h1><a href="/auth">Logar com Google</a>
 </body>
 
 </html>

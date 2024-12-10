@@ -1,6 +1,9 @@
 const restify = require('restify');
 const path = require('path');
 const prodRoutes = require('./routes/prodRoutes');
+const oauth2Routes = require('./routes/oauth2Routes'); // Importa as rotas OAuth2
+
+require('./config/oauth2Config');
 
 const server = restify.createServer({
     name: "Controle de lucros e estoque",
@@ -13,8 +16,8 @@ server.use(restify.plugins.bodyParser());
 
 // Configuração das rotas
 prodRoutes(server);
+oauth2Routes(server); // Registra as rotas OAuth2
 
-// Serve o arquivo index.html da pasta public
 server.get('/*', restify.plugins.serveStatic({
     directory: path.join(__dirname, '..', 'public'),
     default: 'index.html'
