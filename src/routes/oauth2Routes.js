@@ -6,4 +6,7 @@ module.exports = (server) => {
 
     // Rota de callback para lidar com o retorno do OAuth2
     server.get('/callback', oauth2Controller.handleCallback);
+
+    // Rota para logout
+    server.get('/logout', oauth2Controller.logout);
 };

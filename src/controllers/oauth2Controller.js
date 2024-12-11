@@ -21,3 +21,24 @@ exports.handleCallback = (req, res, next) => {
         res.redirect('/profile.html', next);
     })(req, res, next);
 };
+
+exports.logout = (req, res, next) => {
+    if (req.logout) {
+        // Passport fornece a função logout para remover a sessão do usuário
+        req.logout(err => {
+            if (err) {
+                res.send(500, { error: 'Erro ao realizar logout.' });
+                return next();
+            }
+            // Redireciona para a página inicial ou de login
+            res.redirect('/');
+            next();
+        });
+    } else {
+        // Caso `req.logout` não esteja disponível
+        res.send(500, { error: 'Logout não suportado no servidor.' });
+        next();
+    }
+};
+
+

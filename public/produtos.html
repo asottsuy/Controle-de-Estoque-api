@@ -6,34 +6,77 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Produtos</title>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        button {
+            background-color: #4285F4;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #357ae8;
+        }
+
+        #formContainer {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #ffffff;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
         .produto {
             border: 1px solid #ccc;
             margin: 10px 0;
-            padding: 10px;
-            border-radius: 5px;
-            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .produto strong {
             color: #333;
         }
 
-        #formContainer {
-            display: none;
-            margin-top: 20px;
-            padding: 15px;
+        form label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        form input,
+        form select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
             border: 1px solid #ccc;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-        }
-
-        label {
-            margin-right: 10px;
-        }
-
-        input,
-        select {
-            margin-bottom: 10px;
+            border-radius: 4px;
+            font-size: 1rem;
         }
 
         .submit-button {
@@ -41,19 +84,30 @@
             color: white;
             padding: 10px 20px;
             border: none;
+            border-radius: 4px;
             cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
         }
 
         .submit-button:hover {
             background-color: #45a049;
+        }
+
+        #dataContainer {
+            width: 90%;
+            max-width: 800px;
+            margin-top: 20px;
         }
     </style>
 </head>
 
 <body>
     <h1>Lista de Produtos</h1>
-    <button id="getData">Carregar Produtos</button>
-    <button id="addData">Adicionar Produtos</button>
+    <div>
+        <button id="getData">Carregar Produtos</button>
+        <button id="addData">Adicionar Produtos</button>
+    </div>
 
     <div id="formContainer">
         <h2>Adicionar Produto</h2>
@@ -61,19 +115,19 @@
             <input type="hidden" id="editId" name="editId">
 
             <label for="nome_produto">Nome:</label>
-            <input type="text" id="nome_produto" name="nome_produto" required><br><br>
+            <input type="text" id="nome_produto" name="nome_produto" required>
 
             <label for="preco">Preço:</label>
-            <input type="number" id="preco" name="preco" step="0.01" required><br><br>
+            <input type="number" id="preco" name="preco" step="0.01" required>
 
             <label for="tipo">Tipo:</label>
             <select id="tipo" name="tipo" required>
                 <option value="Cozinha">Cozinha</option>
                 <option value="Sushi">Sushi</option>
-            </select><br><br>
+            </select>
 
             <label for="quantidade">Quantidade:</label>
-            <input type="number" id="quantidade" name="quantidade" required><br><br>
+            <input type="number" id="quantidade" name="quantidade" required>
 
             <button type="submit" class="submit-button">Salvar Produto</button>
         </form>

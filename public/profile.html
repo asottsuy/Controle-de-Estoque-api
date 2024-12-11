@@ -5,14 +5,73 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f9;
+        }
+
+        .profile-container {
+            text-align: center;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 400px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        p {
+            font-size: 1rem;
+            color: #555;
+            margin: 0.5rem 0;
+        }
+
+        a {
+            display: inline-block;
+            text-decoration: none;
+            font-size: 1rem;
+            color: #ffffff;
+            background-color: #4285F4;
+            padding: 10px 20px;
+            border-radius: 4px;
+            margin: 10px 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        a:hover {
+            background-color: #357ae8;
+        }
+
+        a.logout {
+            background-color: #f44336;
+        }
+
+        a.logout:hover {
+            background-color: #d32f2f;
+        }
+    </style>
 </head>
 
 <body>
-    <h1>Perfil</h1>
-    <p>Nome: ${req.user.displayName}</p>
-    <p>Email: ${req.user.emails[0].value}</p>
-    <a href="/produtos.html">Estoque de Produtos</a><br>
-    <a href="/logout">Logout</a>
+    <div class="profile-container">
+        <h1>Perfil</h1>
+        <p><strong>Nome:</strong> ${req.user.displayName}</p>
+        <p><strong>Email:</strong> ${req.user.emails[0].value}</p>
+        <a href="/produtos.html">Estoque de Produtos</a>
+        <a href="/logout" class="logout">Logout</a>
+    </div>
 </body>
 
 </html>
